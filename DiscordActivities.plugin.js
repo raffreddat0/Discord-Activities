@@ -33,6 +33,7 @@ const config = {
 		"name": "DiscordActivities",
 		"version": "1.1.1",
 		"description": "Allows you to play Discord's Activity Games (Such as watching YouTube together and Chess) with friends in voice chats.",
+		"github_raw": "https://raw.githubusercontent.com/Raffreddat07/Discord-Activities/main/DiscordActivities.plugin.js",
 		"authors": [{
 			"name": "Raffreddat0",
 			"discord_id": "650726644486504449"
