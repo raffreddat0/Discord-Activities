@@ -33,11 +33,11 @@ const config = {
 		"name": "DiscordActivities",
 		"version": "1.1.2",
 		"description": "Allows you to play Discord's Activity Games (Such as watching YouTube together and Chess) with friends in voice chats.",
-		"github_raw": "https://raw.githubusercontent.com/Raffreddat07/Discord-Activities/main/DiscordActivities.plugin.js",
-		"authors": [{
+    "authors": [{
 			"name": "Raffreddat0",
 			"discord_id": "650726644486504449"
 		}],
+		"github_raw": "https://raw.githubusercontent.com/Raffreddat07/Discord-Activities/main/DiscordActivities.plugin.js"
 	},
 	"build": {
 		"zlibrary": true,
@@ -135,7 +135,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					return ___createMemoize___(this, 'TransitionGroup', () => BdApi.findModuleByDisplayName('TransitionGroup'))
 				},
 				get 'Button'() {
-					return ___createMemoize___(this, 'Button', () => BdApi.findModuleByProps('DropdownSizes'))
+					return ___createMemoize___(this, 'Button', () => BdApi.findModule(m => 'DropdownSizes' in m && typeof(m) === 'function'))
 				},
 				get 'Popout'() {
 					return ___createMemoize___(this, 'Popout', () => BdApi.findModuleByDisplayName('Popout'))
@@ -205,7 +205,7 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					return ___createMemoize___(this, 'Activities', () => BdApi.findModuleByProps('getActivities'))
 				},
 				get 'Games'() {
-					return ___createMemoize___(this, 'Games', () => BdApi.findModuleByProps('getGame'))
+					return ___createMemoize___(this, 'Games', () => BdApi.findModuleByProps('getGame', 'games'))
 				},
 				get 'Auth'() {
 					return ___createMemoize___(this, 'Auth', () => BdApi.findModuleByProps('getId', 'isGuest'))
@@ -315,12 +315,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
 		const external_PluginApi_DiscordModules_namespaceObject = PluginApi.DiscordModules;
 		const external_BasePlugin_namespaceObject = BasePlugin;
 		var external_BasePlugin_default = __webpack_require__.n(external_BasePlugin_namespaceObject);
-		const activitiesExperiment = external_PluginApi_namespaceObject.WebpackModules.getByProps("getEmbeddedActivitiesForUser");
-		const activities = external_PluginApi_namespaceObject.WebpackModules.getByProps("YOUTUBE_APPLICATION_ID");
+		const activities = external_PluginApi_namespaceObject.WebpackModules.getByProps("getSelfEmbeddedActivities");
 		class DiscordActivities extends(external_BasePlugin_default()) {
 			onStart() {
 				this.patchGuildRegion();
-				this.enableExperiment();
+				this.patchEnabledAppIds();
 			}
 			onStop() {
 				external_PluginApi_namespaceObject.Patcher.unpatchAll();
@@ -331,8 +330,8 @@ function buildPlugin([BasePlugin, PluginApi]) {
 					ret.region = "us-west";
 				}));
 			}
-			enableExperiment() {
-				const app = {
+			patchEnabledAppIds() {
+        const app = {
   					youtube: '880218394199220334', // Note : First package to include the new YouTube Together version, any other package offering it will be clearly inspired by it
   					youtubedev: '880218832743055411', // Note : First package to include the new YouTube Together development version, any other package offering it will be clearly inspired by it
   					poker: '755827207812677713',
@@ -345,14 +344,11 @@ function buildPlugin([BasePlugin, PluginApi]) {
   					doodlecrew: '878067389634314250', // Note : First package to offer doodlecrew, any other package offering it will be clearly inspired by it
   					awkword: '879863881349087252', // Note : First package to offer awkword, any other package offering it will be clearly inspired by it
   					spellcast: '852509694341283871', // Note : First package to offer spellcast, any other package offering it will be clearly inspired by it
-					checkers: '832013003968348200' // Note : First package to offer checkers, any other package offering it will be clearly inspired by it
+					  checkers: '832013003968348200' // Note : First package to offer checkers, any other package offering it will be clearly inspired by it
 				};
 				const applicationIds = [app.poker, app.chess, app.checkers, app.betrayal, app.fishing, app.lettertile, app.wordsnack, app.doodlecrew, app.awkword, app.spellcast, app.youtube];
-				external_PluginApi_namespaceObject.Patcher.instead(activitiesExperiment, "getEnabledAppIds", (function() {
+				external_PluginApi_namespaceObject.Patcher.instead(activities, "getEnabledAppIds", (function() {
 					return applicationIds;
-				}));
-				external_PluginApi_namespaceObject.Patcher.instead(activitiesExperiment, "isActivitiesEnabled", (function() {
-					return true;
 				}));
 			}
 		}
